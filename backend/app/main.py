@@ -39,10 +39,9 @@ from app import crud
 # ---------------------------------------------------------------------------
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):  # type: ignore[type-arg]
+async def lifespan(app: FastAPI):
     await init_db()
     yield
-
 
 # ---------------------------------------------------------------------------
 # Application factory
@@ -67,7 +66,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # ===========================================================================
 # HEALTH
 # ===========================================================================
@@ -76,7 +74,6 @@ app.add_middleware(
 async def health_check():
     """Liveness probe."""
     return {"status": "ok", "service": "accountable-api"}
-
 
 # ===========================================================================
 # COMPLAINTS
