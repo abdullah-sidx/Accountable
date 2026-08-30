@@ -1,8 +1,11 @@
 import { useRef, useState } from "react";
-import { issuesApi } from "../services/apiClient";
 
 /**
  * SnapTagForm — citizens upload a photo of a civic problem, tagged with GPS coordinates.
+ *
+ * Submits to:  POST http://127.0.0.1:8000/api/v1/complaints
+ * Payload:     JSON matching ComplaintCreate schema
+ *              { title, description, latitude, longitude, ... }
  */
 
 const CATEGORIES = [
@@ -15,6 +18,8 @@ const CATEGORIES = [
   "Other",
 ];
 
+const BACKEND_URL = "http://127.0.0.1:8000";
+
 export default function SnapTagForm() {
   const fileInputRef = useRef(null);
   const [photo, setPhoto] = useState(null);
@@ -25,6 +30,8 @@ export default function SnapTagForm() {
   const [coords, setCoords] = useState(null);
   const [geoStatus, setGeoStatus] = useState("idle");
   const [submitState, setSubmitState] = useState({ status: "idle", message: "" });
+
+  // ── Handlers ────────────────────────────────────────────────────────────────
 
   const handleFile = (event) => {
     const file = event.target.files?.[0];
@@ -66,8 +73,12 @@ export default function SnapTagForm() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  // ── Submit ───────────────────────────────────────────────────────────────────
+
   const onSubmit = async (event) => {
     event.preventDefault();
+
+    // Client-side validation
     if (!photo) {
       setSubmitState({ status: "error", message: "Attach a photo of the issue first." });
       return;
@@ -76,39 +87,89 @@ export default function SnapTagForm() {
       setSubmitState({ status: "error", message: "Tag GPS coordinates before submitting." });
       return;
     }
-    const finalCategory =
-      category === "Other"
-        ? customCategory.trim() || "Other"
-        : category;
+
+    // Resolve the final category (use free-text when "Other" is selected)
+    const finalCategory = category === "Other" ? customCategory.trim() : category;
     if (category === "Other" && !customCategory.trim()) {
-      setSubmitState({ status: "error", message: "Please describe the category in the custom field." });
+      setSubmitState({
+        status: "error",
+        message: "Please describe the category in the custom field.",
+      });
       return;
     }
 
-    const formData = new FormData();
-    formData.append("photo", photo);
-    formData.append("category", finalCategory);
-    formData.append("description", description);
-    formData.append("latitude", String(coords.lat));
-    formData.append("longitude", String(coords.lng));
-    formData.append("accuracy_m", String(coords.accuracy ?? ""));
-    formData.append("captured_at", new Date().toISOString());
+    // Build JSON payload matching ComplaintCreate (backend schema):
+    //   title       str min_length=5   ← derived from category + coordinates
+    //   description str min_length=10  ← user's "What is wrong?" text (padded if short)
+    //   latitude    float              ← GPS lat
+    //   longitude   float              ← GPS lng
+    const title = `${finalCategory} issue at ${coords.lat}, ${coords.lng}`;
+    const rawDesc = description.trim();
+    const paddedDesc =
+      rawDesc.length >= 10
+        ? rawDesc
+        : `${finalCategory} issue reported near coordinates ${coords.lat}, ${coords.lng} via the Accountable app.`;
 
+    const payload = {
+      title,
+      description: paddedDesc,
+      latitude: coords.lat,
+      longitude: coords.lng,
+      address: null,
+      ward_id: null,
+      submitter_name: null,
+      submitter_contact: null,
+      is_anonymous: false,
+    };
+
+    // POST http://127.0.0.1:8000/api/v1/complaints
     setSubmitState({ status: "submitting", message: "" });
     try {
-      const result = await issuesApi.createSnapTag(formData);
+      const res = await fetch(`${BACKEND_URL}/api/v1/complaints`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      let data = {};
+      try {
+        data = await res.json();
+      } catch {
+        /* non-JSON body — ignore */
+      }
+
+      if (!res.ok) {
+        // Surface Pydantic validation errors cleanly
+        const detail =
+          typeof data?.detail === "string"
+            ? data.detail
+            : Array.isArray(data?.detail)
+              ? data.detail
+                  .map((e) => `${e.loc?.slice(-1)?.[0] ?? "field"}: ${e.msg}`)
+                  .join(" · ")
+              : `Server error ${res.status}`;
+        setSubmitState({ status: "error", message: detail });
+        return;
+      }
+
       setSubmitState({
         status: "success",
-        message: `Report filed${result?.id ? ` · tracking ID ${result.id}` : ""}. +25 civic points.`,
+        message: `✅ Complaint filed${data?.id ? ` · Tracking ID #${data.id}` : ""}. +25 civic points!`,
       });
       reset();
-    } catch (error) {
+    } catch {
       setSubmitState({
         status: "error",
-        message: error?.message || "Could not reach the Accountable backend.",
+        message:
+          "Could not reach backend at http://127.0.0.1:8000. Is the FastAPI server running?",
       });
     }
   };
+
+  // ── Render ───────────────────────────────────────────────────────────────────
 
   return (
     <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
@@ -120,6 +181,7 @@ export default function SnapTagForm() {
       </header>
 
       <form onSubmit={onSubmit} className="mt-4 grid gap-4 md:grid-cols-2">
+        {/* Left column — photo upload */}
         <div className="space-y-3">
           <label className="block text-sm font-medium text-foreground" htmlFor="snaptag-photo">
             Photo evidence
@@ -142,7 +204,9 @@ export default function SnapTagForm() {
           )}
         </div>
 
+        {/* Right column — category, description, GPS, submit */}
         <div className="space-y-3">
+          {/* Category selector */}
           <div>
             <label className="block text-sm font-medium text-foreground" htmlFor="snaptag-category">
               Category
@@ -163,7 +227,7 @@ export default function SnapTagForm() {
               ))}
             </select>
 
-            {/* Conditional custom-category input */}
+            {/* Conditional "Other" free-text input — smooth slide-in */}
             <div
               className={`overflow-hidden transition-all duration-200 ${
                 category === "Other" ? "mt-2 max-h-24 opacity-100" : "max-h-0 opacity-0"
@@ -188,6 +252,7 @@ export default function SnapTagForm() {
             </div>
           </div>
 
+          {/* Description textarea */}
           <div>
             <label className="block text-sm font-medium text-foreground" htmlFor="snaptag-desc">
               What is wrong?
@@ -202,6 +267,7 @@ export default function SnapTagForm() {
             />
           </div>
 
+          {/* GPS tag */}
           <div className="rounded-xl bg-muted p-3">
             <div className="flex items-center justify-between gap-3">
               <div className="text-sm">
@@ -226,6 +292,7 @@ export default function SnapTagForm() {
             </div>
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             disabled={submitState.status === "submitting"}
@@ -234,6 +301,7 @@ export default function SnapTagForm() {
             {submitState.status === "submitting" ? "Filing report…" : "Submit report"}
           </button>
 
+          {/* Status message */}
           {submitState.message && (
             <p
               className={`text-xs ${
