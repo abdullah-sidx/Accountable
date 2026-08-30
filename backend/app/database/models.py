@@ -246,7 +246,10 @@ class Project(Base):
     )
 
     fund_flows = relationship("FundFlow", back_populates="project")
-    tenders = relationship("Tender", back_populates="project")
+    tenders    = relationship("Tender",   back_populates="project")
+    # Reciprocal of Contractor.projects (back_populates="contractor")
+    contractor = relationship("Contractor", back_populates="projects", foreign_keys=[contractor_id])
+
 
 
 class FundFlow(Base):
