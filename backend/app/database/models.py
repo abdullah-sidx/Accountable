@@ -39,6 +39,11 @@ def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
 
+# SQLite requires 'INTEGER PRIMARY KEY' (not BIGINT) to automatically generate rowids.
+# Using with_variant ensures BigInteger is used on PostgreSQL and Integer on SQLite.
+BigIntPK = BigInteger().with_variant(Integer, "sqlite")
+
+
 # ---------------------------------------------------------------------------
 # Base
 # ---------------------------------------------------------------------------
@@ -124,7 +129,7 @@ class Complaint(Base):
 
     __tablename__ = "complaints"
 
-    id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
+    id = Column(BigIntPK, primary_key=True, index=True, autoincrement=True)
     title = Column(String(500), nullable=False)
     description = Column(Text, nullable=False)
 
@@ -150,7 +155,7 @@ class Complaint(Base):
     # Deduplication
     is_duplicate = Column(Boolean, default=False, nullable=False)
     duplicate_of_id = Column(
-        BigInteger, ForeignKey("complaints.id", ondelete="SET NULL"), nullable=True
+        BigIntPK, ForeignKey("complaints.id", ondelete="SET NULL"), nullable=True
     )
     dedup_confidence_score = Column(Float, nullable=True)  # 0.0 – 1.0
 
@@ -197,9 +202,9 @@ class ComplaintImage(Base):
 
     __tablename__ = "complaint_images"
 
-    id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
+    id = Column(BigIntPK, primary_key=True, index=True, autoincrement=True)
     complaint_id = Column(
-        BigInteger,
+        BigIntPK,
         ForeignKey("complaints.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
@@ -260,7 +265,7 @@ class FundFlow(Base):
 
     __tablename__ = "fund_flows"
 
-    id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
+    id = Column(BigIntPK, primary_key=True, index=True, autoincrement=True)
     project_id = Column(
         Integer, ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True
     )
@@ -421,9 +426,9 @@ class TenderMatch(Base):
         UniqueConstraint("complaint_id", "tender_id", name="uq_complaint_tender"),
     )
 
-    id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
+    id = Column(BigIntPK, primary_key=True, index=True, autoincrement=True)
     complaint_id = Column(
-        BigInteger,
+        BigIntPK,
         ForeignKey("complaints.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
@@ -460,9 +465,9 @@ class Escalation(Base):
 
     __tablename__ = "escalations"
 
-    id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
+    id = Column(BigIntPK, primary_key=True, index=True, autoincrement=True)
     complaint_id = Column(
-        BigInteger,
+        BigIntPK,
         ForeignKey("complaints.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
@@ -512,9 +517,9 @@ class RTIRequest(Base):
 
     __tablename__ = "rti_requests"
 
-    id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
+    id = Column(BigIntPK, primary_key=True, index=True, autoincrement=True)
     complaint_id = Column(
-        BigInteger,
+        BigIntPK,
         ForeignKey("complaints.id", ondelete="CASCADE"),
         nullable=False,
         index=True,

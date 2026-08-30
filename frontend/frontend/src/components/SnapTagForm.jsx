@@ -125,7 +125,7 @@ export default function SnapTagForm() {
     // POST http://127.0.0.1:8000/api/v1/complaints
     setSubmitState({ status: "submitting", message: "" });
     try {
-      const res = await fetch(`${BACKEND_URL}/api/v1/complaints`, {
+      const res = await fetch("http://127.0.0.1:8000/api/v1/complaints", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -160,7 +160,8 @@ export default function SnapTagForm() {
         message: `✅ Complaint filed${data?.id ? ` · Tracking ID #${data.id}` : ""}. +25 civic points!`,
       });
       reset();
-    } catch {
+    } catch (err) {
+      console.error(err);
       setSubmitState({
         status: "error",
         message:
