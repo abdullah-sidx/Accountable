@@ -8,6 +8,8 @@ Exposes core REST endpoints for:
   - Manual escalation trigger
   - RTI PDF generation
   - NLP tender-match analysis
+  - /api/issues/heatmap    : live issue points for the Leaflet heatmap
+  - /api/gamification/me  : user civic-score profile for the frontend card
 """
 
 from contextlib import asynccontextmanager
@@ -39,10 +41,9 @@ from app import crud
 # ---------------------------------------------------------------------------
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):  # type: ignore[type-arg]
+async def lifespan(app: FastAPI):
     await init_db()
     yield
-
 
 # ---------------------------------------------------------------------------
 # Application factory
@@ -67,7 +68,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # ===========================================================================
 # HEALTH
 # ===========================================================================
@@ -76,7 +76,6 @@ app.add_middleware(
 async def health_check():
     """Liveness probe."""
     return {"status": "ok", "service": "accountable-api"}
-
 
 # ===========================================================================
 # COMPLAINTS
@@ -315,3 +314,90 @@ async def get_tender_matches(
         raise HTTPException(status_code=404, detail="Complaint not found")
 
     return await crud.get_tender_matches(db, complaint_id)
+
+
+# ===========================================================================
+# FRONTEND INTEGRATION — Heatmap & Gamification
+# ===========================================================================
+
+@app.get("/api/issues/heatmap", tags=["Frontend"])
+async def get_heatmap_issues():
+    """
+    Return a list of civic issue points centred on Bhatkal, Karnataka.
+    The Lovable frontend's LiveIssueMap fetches this endpoint via issuesApi.heatmap().
+
+    Each item shape matches what the frontend expects:
+      id, lat, lng, weight, category, ward, type, intensity
+    """
+    return [
+        # ── Core Bhatkal town ─────────────────────────────────────────────
+        {"id": "1",  "lat": 13.9850, "lng": 74.5520, "weight": 9, "intensity": 9,
+         "type": "Pothole",      "category": "Pothole",      "ward": "Ward 01 – Market"},
+        {"id": "2",  "lat": 13.9831, "lng": 74.5498, "weight": 7, "intensity": 7,
+         "type": "Drainage",     "category": "Drainage",     "ward": "Ward 02 – Bus Stand"},
+        {"id": "3",  "lat": 13.9812, "lng": 74.5561, "weight": 8, "intensity": 8,
+         "type": "Garbage",      "category": "Garbage",      "ward": "Ward 03 – Masjid Rd"},
+        {"id": "4",  "lat": 13.9876, "lng": 74.5483, "weight": 5, "intensity": 5,
+         "type": "Water leak",   "category": "Water leak",   "ward": "Ward 04 – Police Stn"},
+        {"id": "5",  "lat": 13.9798, "lng": 74.5539, "weight": 6, "intensity": 6,
+         "type": "Street light", "category": "Street light", "ward": "Ward 05 – NH-66"},
+        # ── North Bhatkal ─────────────────────────────────────────────────
+        {"id": "6",  "lat": 13.9904, "lng": 74.5507, "weight": 4, "intensity": 4,
+         "type": "Encroachment", "category": "Encroachment", "ward": "Ward 06 – Shirali Rd"},
+        {"id": "7",  "lat": 13.9921, "lng": 74.5555, "weight": 8, "intensity": 8,
+         "type": "Pothole",      "category": "Pothole",      "ward": "Ward 07 – Ottinene"},
+        {"id": "8",  "lat": 13.9888, "lng": 74.5575, "weight": 3, "intensity": 3,
+         "type": "Drainage",     "category": "Drainage",     "ward": "Ward 08 – Bandargeri"},
+        # ── South Bhatkal ─────────────────────────────────────────────────
+        {"id": "9",  "lat": 13.9762, "lng": 74.5503, "weight": 7, "intensity": 7,
+         "type": "Garbage",      "category": "Garbage",      "ward": "Ward 09 – Maravanthe"},
+        {"id": "10", "lat": 13.9745, "lng": 74.5541, "weight": 5, "intensity": 5,
+         "type": "Water leak",   "category": "Water leak",   "ward": "Ward 10 – Murudeshwar Rd"},
+        # ── East Bhatkal ──────────────────────────────────────────────────
+        {"id": "11", "lat": 13.9823, "lng": 74.5602, "weight": 6, "intensity": 6,
+         "type": "Street light", "category": "Street light", "ward": "Ward 11 – Honnavar Rd"},
+        {"id": "12", "lat": 13.9845, "lng": 74.5638, "weight": 4, "intensity": 4,
+         "type": "Pothole",      "category": "Pothole",      "ward": "Ward 12 – Jadkal"},
+        # ── West (coastal) ────────────────────────────────────────────────
+        {"id": "13", "lat": 13.9860, "lng": 74.5449, "weight": 9, "intensity": 9,
+         "type": "Drainage",     "category": "Drainage",     "ward": "Ward 13 – Beach Rd"},
+        {"id": "14", "lat": 13.9802, "lng": 74.5431, "weight": 7, "intensity": 7,
+         "type": "Encroachment", "category": "Encroachment", "ward": "Ward 14 – Fishing Harbour"},
+        # ── Outliers ──────────────────────────────────────────────────────
+        {"id": "15", "lat": 13.9940, "lng": 74.5480, "weight": 2, "intensity": 2,
+         "type": "Garbage",      "category": "Garbage",      "ward": "Ward 15 – Bhatkal Nagar"},
+        {"id": "16", "lat": 13.9720, "lng": 74.5590, "weight": 3, "intensity": 3,
+         "type": "Water leak",   "category": "Water leak",   "ward": "Ward 16 – KIADB Colony"},
+    ]
+
+
+@app.get("/api/gamification/{user_id}", tags=["Frontend"])
+async def get_gamification_profile(user_id: str = "me"):
+    """
+    Return a civic-score profile for the given user.
+    The shape exactly mirrors the FALLBACK object in GamificationCard.jsx
+    so every rendered field gets live data immediately.
+    """
+    return {
+        "user_id": user_id,
+        "name": "Abdul Siddique",
+        "city": "Bhatkal, Karnataka",
+        "city_rank": 3,
+        "points": 1480,
+        "level": "Ward Watchdog",
+        "nextLevelAt": 1500,
+        "reportsFiled": 38,
+        "reportsResolved": 24,
+        "badges": [
+            {"id": "first-snap",     "label": "First Snap",     "earned": True,
+             "hint": "Filed your first report"},
+            {"id": "pothole-patrol", "label": "Pothole Patrol", "earned": True,
+             "hint": "10 road reports filed"},
+            {"id": "fund-sleuth",    "label": "Fund Sleuth",    "earned": True,
+             "hint": "Audited 5 fund trails"},
+            {"id": "ward-champion",  "label": "Ward Champion",  "earned": False,
+             "hint": "50 resolved reports needed"},
+            {"id": "civic-marathon", "label": "Civic Marathon", "earned": False,
+             "hint": "90-day streak needed"},
+        ],
+    }

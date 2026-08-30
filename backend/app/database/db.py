@@ -2,26 +2,47 @@
 Accountable Platform — Database Engine & Session Factory
 =========================================================
 Provides:
-  - async_engine        : SQLAlchemy async engine (asyncpg driver)
+  - async_engine          : SQLAlchemy async engine
+                            SQLite (aiosqlite) for local dev,
+                            PostgreSQL (asyncpg) for production.
   - async_session_factory : sessionmaker for background services
-  - get_db()            : FastAPI dependency-injected AsyncSession
-  - init_db()           : create all tables on startup (dev/test)
+  - get_db()              : FastAPI dependency-injected AsyncSession
+  - init_db()             : create all tables on startup (dev/test)
 """
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.pool import StaticPool
 
 from app.config import settings
 
 # ---------------------------------------------------------------------------
 # Engine
 # ---------------------------------------------------------------------------
+# SQLite requires check_same_thread=False and StaticPool so that
+# aiosqlite reuses a single connection safely across async tasks.
+# PostgreSQL connections use the default QueuePool — those kwargs are
+# passed only when the URL is NOT a SQLite URL.
+# ---------------------------------------------------------------------------
+
+_is_sqlite = settings.DATABASE_URL.startswith("sqlite")
+
+_engine_kwargs = (
+    {
+        "connect_args": {"check_same_thread": False},
+        "poolclass": StaticPool,
+    }
+    if _is_sqlite
+    else {
+        "pool_size": 10,
+        "max_overflow": 20,
+        "pool_pre_ping": True,
+    }
+)
 
 async_engine = create_async_engine(
     settings.DATABASE_URL,
     echo=settings.DB_ECHO,
-    pool_size=10,
-    max_overflow=20,
-    pool_pre_ping=True,
+    **_engine_kwargs,
 )
 
 # ---------------------------------------------------------------------------

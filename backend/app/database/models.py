@@ -26,12 +26,12 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Integer,
+    JSON,
     Numeric,
     String,
     Text,
     UniqueConstraint,
 )
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, relationship
 
 
@@ -156,7 +156,7 @@ class Complaint(Base):
 
     # NLP derived fields
     nlp_category = Column(String(100), nullable=True)   # e.g. "road", "drainage"
-    nlp_keywords = Column(JSONB, nullable=True)          # extracted keyword list
+    nlp_keywords = Column(JSON, nullable=True)          # extracted keyword list
     sentiment_score = Column(Float, nullable=True)       # -1.0 (neg) to +1.0 (pos)
 
     # Timestamps
@@ -206,7 +206,7 @@ class ComplaintImage(Base):
     )
     file_path = Column(Text, nullable=False)           # absolute or S3 URI
     file_hash = Column(String(64), nullable=True)      # SHA-256 for fast equality
-    cv_feature_vector = Column(JSONB, nullable=True)   # serialised ORB/SIFT descriptors
+    cv_feature_vector = Column(JSON, nullable=True)   # serialised ORB/SIFT descriptors
     uploaded_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
 
     complaint = relationship("Complaint", back_populates="images")
@@ -278,7 +278,7 @@ class FundFlow(Base):
     beneficiary_account = Column(String(100), nullable=True)
 
     # Raw PFMS payload preserved for audit
-    raw_pfms_payload = Column(JSONB, nullable=True)
+    raw_pfms_payload = Column(JSON, nullable=True)
 
     transaction_date = Column(DateTime(timezone=True), nullable=False)
     created_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
@@ -393,7 +393,7 @@ class Tender(Base):
     awarded_at = Column(DateTime(timezone=True), nullable=True)
 
     # NLP embedding stored as JSON array for similarity search
-    nlp_embedding = Column(JSONB, nullable=True)
+    nlp_embedding = Column(JSON, nullable=True)
 
     created_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
 
@@ -436,7 +436,7 @@ class TenderMatch(Base):
     keyword_overlap_score = Column(Float, nullable=True)       # Jaccard keyword overlap
     combined_confidence = Column(Float, nullable=False)        # weighted final score
 
-    matched_keywords = Column(JSONB, nullable=True)           # list of overlapping terms
+    matched_keywords = Column(JSON, nullable=True)           # list of overlapping terms
     shell_company_flagged = Column(Boolean, default=False, nullable=False)
 
     created_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)

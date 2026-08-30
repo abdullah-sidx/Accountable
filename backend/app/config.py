@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     # ------------------------------------------------------------------
     # Database
     # ------------------------------------------------------------------
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/accountable"
+    DATABASE_URL: str = "sqlite+aiosqlite:///./accountable.db"
     DB_ECHO: bool = False
 
     # ------------------------------------------------------------------
