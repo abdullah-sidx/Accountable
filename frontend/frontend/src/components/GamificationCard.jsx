@@ -7,22 +7,25 @@ import { gamificationApi } from "../services/apiClient";
 
 const FALLBACK = {
   name: "Citizen",
+  city: "Bhatkal, Karnataka",
+  city_rank: null,
   points: 1240,
   level: "Ward Watchdog",
   nextLevelAt: 1500,
   reportsFiled: 34,
   reportsResolved: 21,
   badges: [
-    { id: "first-snap", label: "First Snap", earned: true, hint: "Filed your first report" },
-    { id: "pothole-patrol", label: "Pothole Patrol", earned: true, hint: "10 road reports" },
-    { id: "fund-sleuth", label: "Fund Sleuth", earned: true, hint: "Audited 5 fund trails" },
-    { id: "ward-champion", label: "Ward Champion", earned: false, hint: "50 resolved reports" },
+    { id: "first-snap",     label: "First Snap",     earned: true,  hint: "Filed your first report" },
+    { id: "pothole-patrol", label: "Pothole Patrol", earned: true,  hint: "10 road reports" },
+    { id: "fund-sleuth",    label: "Fund Sleuth",    earned: true,  hint: "Audited 5 fund trails" },
+    { id: "ward-champion",  label: "Ward Champion",  earned: false, hint: "50 resolved reports" },
     { id: "civic-marathon", label: "Civic Marathon", earned: false, hint: "90-day streak" },
   ],
 };
 
 export default function GamificationCard({ userId = "me" }) {
   const [profile, setProfile] = useState(FALLBACK);
+  const [source, setSource] = useState("sample");
   const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
@@ -30,9 +33,14 @@ export default function GamificationCard({ userId = "me" }) {
     gamificationApi
       .profile(userId)
       .then((data) => {
-        if (!cancelled && data && typeof data === "object") setProfile({ ...FALLBACK, ...data });
+        if (!cancelled && data && typeof data === "object") {
+          setProfile({ ...FALLBACK, ...data });
+          setSource("live");
+        }
       })
-      .catch(() => {});
+      .catch(() => {
+        if (!cancelled) setSource("sample");
+      });
     return () => {
       cancelled = true;
     };
@@ -60,6 +68,30 @@ export default function GamificationCard({ userId = "me" }) {
           <p className="text-sm text-muted-foreground">
             {profile.level} · {profile.reportsResolved}/{profile.reportsFiled} reports resolved
           </p>
+          {/* City + rank row */}
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            {profile.city ?? "—"}
+            {profile.city_rank != null && (
+              <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                #{profile.city_rank} city rank
+              </span>
+            )}
+          </p>
+          {/* Live / offline badge */}
+          <span
+            className={`mt-1.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${
+              source === "live"
+                ? "bg-green-100 text-green-700"
+                : "bg-muted text-muted-foreground"
+            }`}
+          >
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                source === "live" ? "bg-green-500" : "bg-gray-400"
+              }`}
+            />
+            {source === "live" ? "Backend connected" : "Sample data"}
+          </span>
         </div>
         <div className="rounded-2xl bg-primary/10 px-4 py-2 text-center">
           <p className="text-2xl font-semibold tabular-nums text-primary">{profile.points}</p>
