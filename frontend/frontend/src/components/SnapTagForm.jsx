@@ -12,6 +12,7 @@ const CATEGORIES = [
   "Water leak",
   "Drainage",
   "Encroachment",
+  "Other",
 ];
 
 export default function SnapTagForm() {
@@ -19,6 +20,7 @@ export default function SnapTagForm() {
   const [photo, setPhoto] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [category, setCategory] = useState(CATEGORIES[0]);
+  const [customCategory, setCustomCategory] = useState("");
   const [description, setDescription] = useState("");
   const [coords, setCoords] = useState(null);
   const [geoStatus, setGeoStatus] = useState("idle");
@@ -57,6 +59,8 @@ export default function SnapTagForm() {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(null);
     setDescription("");
+    setCategory(CATEGORIES[0]);
+    setCustomCategory("");
     setCoords(null);
     setGeoStatus("idle");
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -72,10 +76,18 @@ export default function SnapTagForm() {
       setSubmitState({ status: "error", message: "Tag GPS coordinates before submitting." });
       return;
     }
+    const finalCategory =
+      category === "Other"
+        ? customCategory.trim() || "Other"
+        : category;
+    if (category === "Other" && !customCategory.trim()) {
+      setSubmitState({ status: "error", message: "Please describe the category in the custom field." });
+      return;
+    }
 
     const formData = new FormData();
     formData.append("photo", photo);
-    formData.append("category", category);
+    formData.append("category", finalCategory);
     formData.append("description", description);
     formData.append("latitude", String(coords.lat));
     formData.append("longitude", String(coords.lng));
@@ -138,7 +150,10 @@ export default function SnapTagForm() {
             <select
               id="snaptag-category"
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={(e) => {
+                setCategory(e.target.value);
+                if (e.target.value !== "Other") setCustomCategory("");
+              }}
               className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
             >
               {CATEGORIES.map((c) => (
@@ -147,6 +162,30 @@ export default function SnapTagForm() {
                 </option>
               ))}
             </select>
+
+            {/* Conditional custom-category input */}
+            <div
+              className={`overflow-hidden transition-all duration-200 ${
+                category === "Other" ? "mt-2 max-h-24 opacity-100" : "max-h-0 opacity-0"
+              }`}
+            >
+              <label
+                className="block text-xs font-medium text-muted-foreground"
+                htmlFor="snaptag-custom-category"
+              >
+                Describe the category
+              </label>
+              <input
+                id="snaptag-custom-category"
+                type="text"
+                value={customCategory}
+                onChange={(e) => setCustomCategory(e.target.value)}
+                placeholder="e.g. Fallen tree, broken bench…"
+                maxLength={80}
+                aria-label="Custom category description"
+                className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
+              />
+            </div>
           </div>
 
           <div>

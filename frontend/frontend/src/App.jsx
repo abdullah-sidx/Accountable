@@ -54,17 +54,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-8">
-        <section className="mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-            Every pothole, every rupee, on the record.
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
-            Accountable connects citizen-reported civic problems to the public money sanctioned to
-            fix them — so gaps between spending and work done become impossible to hide.
-          </p>
-        </section>
-
+      <main className="mx-auto max-w-6xl px-4 py-6">
         {view === "map" && (
           <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
             <LiveIssueMap />
@@ -85,12 +75,6 @@ export default function App() {
           </div>
         )}
       </main>
-
-      <footer className="border-t border-border py-6">
-        <p className="mx-auto max-w-6xl px-4 text-xs text-muted-foreground">
-          Accountable · open civic data · backend API at http://localhost:8000
-        </p>
-      </footer>
     </div>
   );
 }

@@ -16,12 +16,13 @@ const SAMPLE_TRAIL = [
     spent: 3100000,
     workVerified: 62,
     contractor: "Sri Balaji Infra",
+    warrantyStatus: "Valid until 2027-07-02",
     stages: [
-      { label: "Sanctioned", amount: 4200000, date: "2026-01-12", status: "done" },
+      { label: "Sanctioned",       amount: 4200000, date: "2026-01-12", status: "done" },
       { label: "Released to ward", amount: 4200000, date: "2026-02-03", status: "done" },
       { label: "Contract awarded", amount: 3850000, date: "2026-02-27", status: "done" },
-      { label: "Bills paid", amount: 3100000, date: "2026-06-14", status: "partial" },
-      { label: "Work verified", amount: 2604000, date: "2026-07-02", status: "partial" },
+      { label: "Bills paid",       amount: 3100000, date: "2026-06-14", status: "partial" },
+      { label: "Work verified",    amount: 2604000, date: "2026-07-02", status: "partial" },
     ],
   },
   {
@@ -33,12 +34,13 @@ const SAMPLE_TRAIL = [
     spent: 1150000,
     workVerified: 96,
     contractor: "Kaveri Works Pvt Ltd",
+    warrantyStatus: "Valid until 2027-07-19",
     stages: [
-      { label: "Sanctioned", amount: 1850000, date: "2026-03-04", status: "done" },
+      { label: "Sanctioned",       amount: 1850000, date: "2026-03-04", status: "done" },
       { label: "Released to ward", amount: 1200000, date: "2026-03-30", status: "partial" },
       { label: "Contract awarded", amount: 1150000, date: "2026-04-11", status: "done" },
-      { label: "Bills paid", amount: 1150000, date: "2026-06-28", status: "done" },
-      { label: "Work verified", amount: 1104000, date: "2026-07-19", status: "done" },
+      { label: "Bills paid",       amount: 1150000, date: "2026-06-28", status: "done" },
+      { label: "Work verified",    amount: 1104000, date: "2026-07-19", status: "done" },
     ],
   },
   {
@@ -50,12 +52,13 @@ const SAMPLE_TRAIL = [
     spent: 2100000,
     workVerified: 23,
     contractor: "Nova Lumen Systems",
+    warrantyStatus: "Pending — work not yet verified",
     stages: [
-      { label: "Sanctioned", amount: 9600000, date: "2026-04-22", status: "done" },
+      { label: "Sanctioned",       amount: 9600000, date: "2026-04-22", status: "done" },
       { label: "Released to ward", amount: 5000000, date: "2026-05-15", status: "partial" },
       { label: "Contract awarded", amount: 4800000, date: "2026-05-29", status: "done" },
-      { label: "Bills paid", amount: 2100000, date: "2026-08-01", status: "partial" },
-      { label: "Work verified", amount: 483000, date: "—", status: "pending" },
+      { label: "Bills paid",       amount: 2100000, date: "2026-08-01", status: "partial" },
+      { label: "Work verified",    amount:  483000, date: "—",          status: "pending" },
     ],
   },
 ];
@@ -191,6 +194,35 @@ export default function FundTrailTable() {
                   {open && (
                     <tr className="bg-muted/60">
                       <td colSpan={6} className="px-3 py-4">
+
+                        {/* ── Contractor & Warranty strip ───────────────── */}
+                        <div className="mb-4 flex flex-wrap gap-3">
+                          {/* Contractor */}
+                          <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-sm">
+                            <span className="text-muted-foreground">Contractor:</span>
+                            <span className="font-medium text-foreground">
+                              {row.contractor ?? "—"}
+                            </span>
+                          </div>
+
+                          {/* Warranty status */}
+                          <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-sm">
+                            <span className="text-muted-foreground">Warranty Status:</span>
+                            <span
+                              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                                (row.warrantyStatus ?? "").startsWith("Valid")
+                                  ? "bg-success/15 text-success"
+                                  : (row.warrantyStatus ?? "").startsWith("Pending")
+                                    ? "bg-warning/20 text-warning-foreground"
+                                    : "bg-destructive/15 text-destructive"
+                              }`}
+                            >
+                              {row.warrantyStatus ?? "Unknown"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* ── Stage steps ───────────────────────────────── */}
                         <ol className="grid gap-3 md:grid-cols-5">
                           {(row.stages ?? []).map((stage, i) => (
                             <li
