@@ -1,197 +1,861 @@
 <div align="center">
 
-`🇮🇳 Pilot Deployment · Bhatkal, Karnataka, India`
-
 # 🏛️ Accountable
-### Civic Transparency & Public Audit Platform — From Sanction to Verification
 
-Bringing radical public transparency to civic infrastructure, public financial management (PFMS), contractor accountability, and citizen grievances.
+### Civic Transparency & Public Audit Platform
 
-<br/>
+**From Sanction → Spending → Execution → Verification**
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.111.0+-009688.svg?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![React 19](https://img.shields.io/badge/React-19.0-61DAFB.svg?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8+-3178C6.svg?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.0-38B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
-[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0_(Async)-D71F00.svg?style=for-the-badge&logo=sqlalchemy&logoColor=white)](https://www.sqlalchemy.org)
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-f0883e.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+<p>
+  <img src="https://img.shields.io/badge/STATUS-CONCEPT%20%2F%20PROTOTYPE-2563EB?style=for-the-badge" alt="Concept / Prototype">
+  <img src="https://img.shields.io/badge/PILOT-BHATKAL%2C%20KARNATAKA-16A34A?style=for-the-badge" alt="Bhatkal, Karnataka">
+  <img src="https://img.shields.io/badge/FOCUS-CIVIC%20TRANSPARENCY-F97316?style=for-the-badge" alt="Civic Transparency">
+</p>
+
+<p><strong>Making public projects easier to track, understand, verify, and question.</strong></p>
 
 </div>
 
 ---
 
-> **📝 Changelog & Repository Fixes Applied:**
-> * **Fixed Nested Directory Path:** Resolved duplicate path `frontend/frontend/src/` down to `frontend/src/`.
-> * **Unified Gamification Routes:** Documented and synchronized both session context (`GET /api/gamification/me`) and user-specific lookup (`GET /api/gamification/{user_id}`).
-> * **12-Factor Settings Annotation:** Standardized `backend/app/config.py` as *Pydantic Settings (12-Factor)*.
-> * **Linked NLP Semantic Model:** Linked Hugging Face model repository for [`all-MiniLM-L6-v2`](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2).
 
----
+>**! IMPORTANT !**  
+> **Accountable is currently a concept / prototype.** The features, architecture, AI workflows, APIs, integrations, and escalation processes described in this README represent the proposed direction of the project. They are not claims of a deployed government platform, verified public records, or legally validated procedures.
 
 ## 📌 Table of Contents
 
-- [Overview](#-overview)
-- [System Architecture](#-system-architecture)
-- [Key Features](#-key-features)
-  - [1. Live Issue Heatmap & Geo-Tracking](#1-live-issue-heatmap--geo-tracking)
-  - [2. "Snap & Tag" Citizen Reporting](#2-snap--tag-citizen-reporting)
-  - [3. Computer Vision (CV) Deduplication Engine](#3-computer-vision-cv-deduplication-engine)
-  - [4. NLP Procurement & Tender Matcher](#4-nlp-procurement--tender-matcher)
-  - [5. Shell-Company & Contractor Risk Intelligence](#5-shell-company--contractor-risk-intelligence)
-  - [6. SLA-Driven Multi-Tier Escalation Pipeline](#6-sla-driven-multi-tier-escalation-pipeline)
-  - [7. Automated Day-14 RTI PDF Generation](#7-automated-day-14-rti-pdf-generation)
-  - [8. Public Fund Trail Audit](#8-public-fund-trail-audit)
-  - [9. Civic Gamification & Community Impact](#9-civic-gamification--community-impact)
-- [Escalation Matrix & SLAs](#-escalation-matrix--slas)
-- [Tech Stack](#-tech-stack)
-- [Repository Structure](#-repository-structure)
-- [Getting Started](#-getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Backend Setup (FastAPI)](#backend-setup-fastapi)
-  - [Frontend Setup (TanStack Start / React)](#frontend-setup-tanstack-start--react)
-- [Configuration & Environment Variables](#-configuration--environment-variables)
-- [API Reference](#-api-reference)
-- [Roadmap](#-roadmap)
-- [Contributing](#-contributing)
-- [License](#-license)
+- [💡 About the Project](#-about-the-project)
+- [🎯 Problem](#-problem)
+- [🚀 Vision](#-vision)
+- [🔄 How It Works](#-how-it-works)
+- [✨ Proposed Features](#-proposed-features)
+- [🤖 AI-Assisted Analysis](#-ai-assisted-analysis)
+- [💰 Public Fund Trail](#-public-fund-trail)
+- [⏱️ Escalation Concept](#️-escalation-concept)
+- [🏗️ Architecture](#️-architecture)
+- [🛠️ Technology Stack](#️-technology-stack)
+- [📁 Project Structure](#-project-structure)
+- [🗺️ Pilot: Bhatkal](#️-pilot-bhatkal)
+- [🔐 Responsible AI & Transparency](#-responsible-ai--transparency)
+- [🛣️ Roadmap](#️-roadmap)
+- [🧪 Development Approach](#-development-approach)
+- [🤝 Contributing](#-contributing)
+- [📜 License](#-license)
+- [⚠️ Disclaimer](#️-disclaimer)
 
 ---
 
-## 🌟 Overview
+## 💡 About the Project
 
-**Accountable** is an open-source civic governance and infrastructure tracking platform engineered to bridge the gap between sanctioned public funds and ground-level municipal reality.
+**Accountable** is a proposed civic-tech platform designed to make public infrastructure projects, public spending, contractor information, and citizen grievances easier to understand and monitor.
 
-In many developing municipalities, public grievances disappear into administrative black holes, contractors win tenders through undisclosed shell networks, and sanctioned funds show up as "utilized" while potholes, leaking water mains, and broken streetlights persist for years.
+The core idea is to connect information that is often scattered across different systems:
 
-> **Accountable transforms passive citizens into active civic auditors** — combining computer vision, natural language processing, and automated statutory legal pipelines to hold municipal bodies accountable from the moment a grievance is filed to on-site resolution verification.
+```text
+Public Funds
+     ↓
+Tenders
+     ↓
+Contractors
+     ↓
+Project Execution
+     ↓
+Citizen Reports
+     ↓
+Verification
+     ↓
+Accountability
+```
 
-### Core Pillars
-1. **Field Auditing:** Citizens capture civic failures with GPS and timestamp validation.
-2. **Automated Deduplication:** OpenCV ORB keypoints and spatial clustering stop administrative queue bloat.
-3. **Procurement Cross-Auditing:** Grievances match directly to sanctioned municipal contracts using semantic vector search.
-4. **Shell Company Intelligence:** Shared addresses and director networks surface collusive bidding rings.
-5. **Hard SLA Escalations:** Strict statutory countdown timers escalate unaddressed complaints through authority tiers.
-6. **Programmatic RTI Petitions:** Auto-generates ready-to-file legal Right to Information (RTI) petitions when SLAs lapse.
-7. **Fund-Flow Traceability:** Audits financial disbursements across `Sanctioned` ➔ `Released` ➔ `Utilized`.
+Instead of citizens having to navigate multiple sources independently, Accountable aims to provide a unified view of the public-project lifecycle.
 
 ---
 
-## 🏗️ System Architecture
+## 🎯 Problem
+
+Citizens often struggle to answer simple questions about public infrastructure:
+
+- Where was public money allocated?
+- What was the money intended for?
+- Which contractor received the work?
+- What was the sanctioned amount?
+- How much was reportedly released or utilized?
+- Is the project actually being completed?
+- Why has a project been delayed?
+- Have other citizens reported the same issue?
+- What happens when a complaint remains unresolved?
+
+The information may exist, but it can be spread across tenders, financial records, departmental systems, notices, and local observations.
+
+### The proposed solution
+
+Accountable brings these relationships into one place and provides tools for **reporting, discovery, analysis, and verification**.
+
+---
+
+## 🚀 Vision
+
+> ### **Turn public information into public understanding — and public participation into measurable accountability.**
+
+Accountable is built around five simple stages:
+
+| Stage | Goal |
+|---|---|
+| 🗺️ **Observe** | Understand projects and civic issues |
+| 📢 **Report** | Allow citizens to report problems |
+| 🔎 **Connect** | Link reports with projects, funds, tenders, and contractors |
+| 🤖 **Analyze** | Surface potentially useful patterns using AI/ML |
+| ✅ **Verify** | Keep humans involved before information is treated as confirmed |
+
+---
+
+## 🔄 How It Works
+
+```text
+                         PUBLIC PROJECT
+                               │
+                ┌──────────────┴──────────────┐
+                ▼                             ▼
+        FUND INFORMATION                 TENDER DATA
+                │                             │
+                └──────────────┬──────────────┘
+                               ▼
+                         CONTRACTOR
+                               │
+                               ▼
+                       PROJECT EXECUTION
+                               │
+                ┌──────────────┴──────────────┐
+                ▼                             ▼
+        CITIZEN REPORTS                  PROJECT DATA
+                │                             │
+                └──────────────┬──────────────┘
+                               ▼
+                        AI-ASSISTED ANALYSIS
+                               │
+                               ▼
+                         HUMAN REVIEW
+                               │
+                               ▼
+                           VERIFIED
+                               │
+                               ▼
+                        ACCOUNTABILITY
+```
+
+---
+
+# ✨ Proposed Features
+
+## 1. 🗺️ Issue Map & Geo-Tracking
+
+A proposed interactive map for visualizing civic issues and public projects.
+
+### Possible capabilities
+
+- Interactive map
+- Municipal ward boundaries
+- Issue categories
+- Severity indicators
+- Status filtering
+- Project-linked reports
+- Location-based search
+
+### Example categories
+
+`Pothole` · `Drainage` · `Garbage` · `Water Leak` · `Streetlight` · `Encroachment`
+
+---
+
+## 2. 📸 Snap & Tag Citizen Reporting
+
+A mobile-first reporting experience designed for quick field reporting.
+
+```text
+Capture Photo
+     ↓
+Add Description
+     ↓
+Capture Location
+     ↓
+Select Category
+     ↓
+Submit Report
+     ↓
+Tracking ID
+```
+
+Potential report information:
+
+- Photos
+- Description
+- GPS location
+- Timestamp
+- Category
+- Ward
+- Project reference
+
+---
+
+## 3. 🔍 Potential Duplicate Detection
+
+The platform could identify reports that may refer to the same physical issue.
+
+### Proposed pipeline
+
+```text
+Citizen Report
+      │
+      ▼
+Location Similarity
+      │
+      ▼
+Image Similarity
+      │
+      ▼
+Text Similarity
+      │
+      ▼
+Potential Match
+      │
+      ▼
+Human Review
+```
+
+Possible techniques:
+
+- Haversine distance
+- OpenCV image comparison
+- ORB feature matching
+- TF-IDF cosine similarity
+
+> A similarity score would indicate a **potential relationship**, not prove that two reports are identical.
+
+---
+
+## 4. 🧠 NLP Tender & Procurement Matching
+
+Citizen reports could potentially be matched against relevant tender and procurement information.
+
+```text
+Complaint / Tender
+        │
+        ▼
+Text Processing
+        │
+   ┌────┴────┐
+   ▼         ▼
+  NER     Keywords
+   │         │
+   └────┬────┘
+        ▼
+Semantic Embeddings
+        │
+        ▼
+Similarity Score
+        │
+        ▼
+Candidate Match
+```
+
+Potential technologies:
+
+- spaCy
+- YAKE
+- Sentence Transformers
+- `all-MiniLM-L6-v2`
+
+The purpose is to surface potentially relevant records for further investigation.
+
+---
+
+## 5. 🕸️ Contractor Relationship Intelligence
+
+A proposed network view could connect publicly available contractor information.
+
+```text
+                    Contractor
+                        │
+          ┌─────────────┼─────────────┐
+          ▼             ▼             ▼
+      Directors      Addresses      Tenders
+          │                           │
+          └─────────────┬─────────────┘
+                        ▼
+                     Projects
+```
+
+Potential indicators could include:
+
+- Shared directors
+- Shared registered addresses
+- Recurring tender relationships
+- Contractor-project history
+- Geographic overlap
+
+> These are **investigative indicators only**. Automated relationships should never be treated as proof of fraud, collusion, or illegal activity.
+
+---
+
+## 6. ⏱️ Escalation Workflow
+
+A proposed workflow can track unresolved complaints and move them through configured authority levels.
+
+```text
+Issue Reported
+      │
+      ▼
+ Initial Handling
+      │
+      ▼
+ Local Escalation
+      │
+      ▼
+ District Review
+      │
+      ▼
+ Higher-Level Review
+      │
+      ▼
+ Information Request / RTI Assistance
+```
+
+The actual authority structure and deadlines would need to be configured according to the applicable local procedures.
+
+---
+
+## 7. 📄 RTI Assistance
+
+Accountable could help citizens prepare a structured RTI application draft when additional public information is required.
+
+Potential output:
+
+- Project reference
+- Tender details
+- Financial questions
+- Relevant authority / PIO details
+- Structured application document
+
+> The platform would provide **RTI assistance**, not claim that an automatically generated document is legally validated or automatically filed.
+
+---
+
+## 8. 💰 Public Fund Trail
+
+A central concept is making the financial lifecycle of a public project easier to understand.
+
+```text
+┌──────────────┐
+│   Sanction   │
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│   Released   │
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│   Utilized   │
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│  Execution   │
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│ Verification │
+└──────────────┘
+```
+
+Potential analysis:
+
+- Fund allocation
+- Reported expenditure
+- Project status
+- Delays
+- Cost changes
+- Missing information
+
+Financial information should retain a clear source and provenance.
+
+---
+
+## 9. 🏆 Civic Gamification
+
+The concept could encourage constructive participation through recognition rather than simply rewarding high complaint volume.
+
+### 🏅 Badges
+
+- First Snap
+- Pothole Patrol
+- Fund Sleuth
+- Ward Champion
+- Civic Marathon
+
+### 🏆 Ranks
+
+- Civic Observer
+- Community Reporter
+- Ward Watchdog
+
+### 📊 Community Metrics
+
+- Verified reports
+- Resolved issues
+- Community impact
+- Ward participation
+
+---
+
+# 🤖 AI-Assisted Analysis
+
+Accountable's proposed AI layer follows one principle:
+
+> **AI identifies patterns. Humans verify them.**
+
+```text
+                 CITIZEN REPORT
+                       │
+             ┌─────────┴─────────┐
+             ▼                   ▼
+         TEXT DATA           IMAGE DATA
+             │                   │
+             ▼                   ▼
+            NLP                  CV
+             │                   │
+             └─────────┬─────────┘
+                       ▼
+              Similarity Signals
+                       │
+                       ▼
+                Risk Indicators
+                       │
+                       ▼
+                 Human Review
+                       │
+                       ▼
+                  Verification
+```
+
+### Proposed AI components
+
+| Component | Technology | Purpose |
+|---|---|---|
+| Text similarity | TF-IDF | Compare report descriptions |
+| Semantic similarity | Sentence Transformers | Compare document meaning |
+| Entity extraction | spaCy | Identify entities and locations |
+| Keyword extraction | YAKE | Extract important terms |
+| Image analysis | OpenCV | Compare visual characteristics |
+| Spatial matching | Haversine | Identify nearby reports |
+
+---
+
+# 💰 Public Fund & Project Relationship
+
+The platform aims to connect financial records with physical project information.
 
 ```mermaid
-flowchart TD
-    subgraph Client["Frontend Layer (TanStack Start / React 19)"]
-        UI[User Interface / Leaflet Map]
-        SnapForm[Snap & Tag Report Form]
-        FundTable[Public Fund Trail Table]
-        GamerCard[Civic Score & Gamification]
+flowchart LR
+    A[Public Allocation] --> B[Sanction]
+    B --> C[Tender]
+    C --> D[Contractor]
+    D --> E[Project Execution]
+    E --> F[Citizen Observation]
+    F --> G[Verification]
+```
+
+This relationship helps answer:
+
+> **What was planned → Who received the work → What was funded → What happened on the ground?**
+
+---
+
+# ⏱️ Escalation Concept
+
+A conceptual timeline for the prototype:
+
+| Level | Suggested Window | Purpose |
+|---|---:|---|
+| **T1** | 0–72 hours | Initial complaint handling |
+| **T2** | 72–120 hours | Local escalation |
+| **T3** | 120–168 hours | District review |
+| **T4** | 168–336 hours | Higher-level review |
+| **RTI** | After 336 hours | Information request assistance |
+
+```text
+DAY 0
+  │
+  ▼
+T1 — Initial Handling
+  │
+  ▼
+DAY 3
+  │
+  ▼
+T2 — Local Escalation
+  │
+  ▼
+DAY 5
+  │
+  ▼
+T3 — District Review
+  │
+  ▼
+DAY 7
+  │
+  ▼
+T4 — Higher Review
+  │
+  ▼
+DAY 14
+  │
+  ▼
+RTI Assistance
+```
+
+> ⚠️ These are **conceptual workflow values**, not statutory deadlines.
+
+---
+
+# 🏗️ Architecture
+
+```mermaid
+flowchart TB
+    USER[Citizen / Public User]
+
+    subgraph FRONTEND["Frontend Layer"]
+        WEB[React Web Application]
+        MAP[Interactive Map]
+        REPORT[Citizen Reporting]
+        DASH[Public Dashboard]
     end
 
-    subgraph API["FastAPI Asynchronous Gateway"]
-        Router[FastAPI REST Router & Middlewares]
-        CRUD[SQLAlchemy 2.0 Async CRUD Layer]
-        DB[(SQLite / PostgreSQL DB)]
+    subgraph BACKEND["Backend Layer"]
+        API[FastAPI API]
+        SERVICES[Application Services]
+        DB[(SQLite / PostgreSQL)]
     end
 
-    subgraph Background["AI / ML & Automation Workers"]
-        CV[CV Deduplication Engine\n- Haversine Distance <500m\n- OpenCV ORB Keypoint Matching\n- TF-IDF Text Cosine Fallback]
-        NLP[NLP Tender Matcher\n- spaCy NER & YAKE Keywords\n- all-MiniLM-L6-v2 Embeddings]
-        Shell[Contractor Network Detector\n- Shared Directorships\n- Registered Entity Addresses]
-        Escalator[Escalation Worker\n- 72h: Ward Officer\n- 120h: MLA\n- 168h: Collector\n- 240h: State Auth]
-        RTI[RTI PDF Generator\n- Day-14 Auto-Trigger\n- ReportLab + Jinja2 Templates]
+    subgraph AI["AI / ML Layer"]
+        NLP[NLP Analysis]
+        CV[Computer Vision]
+        SIM[Similarity Engine]
     end
 
-    UI -->|GET /api/issues/heatmap| Router
-    GamerCard -->|GET /api/gamification/me| Router
-    FundTable -->|GET /api/v1/fund-flows| Router
-    SnapForm -->|POST /api/v1/complaints| Router
+    subgraph ACCOUNTABILITY["Accountability Layer"]
+        ESC[Escalation Workflow]
+        RTI[RTI Assistance]
+        VERIFY[Verification]
+    end
 
-    Router --> CRUD --> DB
-    Router -.->|Background Task| CV
-    Router -.->|Background Task| NLP
-    CV --> DB
-    NLP --> DB
-    Shell --> DB
-    Escalator --> DB
-    RTI --> DB
-🚀 Key Features1. Live Issue Heatmap & Geo-TrackingGeospatial Visualization: Interactive Leaflet-powered map displaying active civic issues in real-time.Granular Filtering: Color-coded by severity, status, category (Pothole, Drainage, Garbage, Water Leak, Streetlight, Encroachment), and municipal ward.Audit-Linked Popups: Dynamic map cards connect issues directly to municipal fund allocation records.2. "Snap & Tag" Citizen ReportingStreamlined Intake: Lightweight, mobile-first issue submission interface.Automated Geolocation: High-accuracy browser GPS capture with fallback manual pin placement.Categorization Engine: Ward selection, category tagging, and multi-photo file uploads.Instant Verification: Issues receive immediate public tracking IDs upon submission.3. Computer Vision (CV) Deduplication EngineMunicipalities often receive hundreds of redundant complaints for the same prominent pothole or broken pipe. Accountable filters redundancy through a 3-stage pipeline:Spatial Gatekeeper: Computes Haversine distance between incidents (GEO_RADIUS_METRES = 500m).Visual Keypoint Matching: Employs OpenCV ORB (Oriented FAST and Rotated BRIEF) extraction with Lowe's ratio test on attached photos.Textual Fallback: Evaluates TF-IDF vector cosine similarity across report descriptions when photos are ambiguous or absent.Consolidation: High-confidence matches (score >= 0.75) merge into an existing parent ticket, incrementing an upvote counter instead of creating duplicates.4. NLP Procurement & Tender MatcherDirectly connects unstructured citizen complaints to public procurement tenders:Entity & Keyword Extraction: spaCy Named Entity Recognition (NER) paired with YAKE keyword extraction processes raw complaint text.Semantic Embeddings: Uses sentence-transformers/all-MiniLM-L6-v2 to map complaints and published tender documents into a shared vector space.Discrepancy Detection: Identifies whether active or recently billed contracts encompass the defective location.5. Shell-Company & Contractor Risk IntelligenceNetwork Graphing: Relational mapping linking contractors, registration IDs, and shared board members (ContractorDirector).Collusion Alerts: Flags shell entities, common bidding addresses, and vendors winning bids across overlapping jurisdictions without verified equipment or past execution records.6. SLA-Driven Multi-Tier Escalation PipelineUnresolved grievances advance through a statutory chain of responsibility using rigid countdown timers:Dispatches templated, automated notices to verified administrative email addresses.Surfaces ticket history, photo proofs, and time elapsed to hold each administrative tier accountable.7. Automated Day-14 RTI PDF GenerationIf an issue remains unaddressed after 14 days (336 hours), the system auto-compiles a legally valid Right to Information (RTI) application PDF.Engineered using ReportLab and Jinja2, matching statutory Indian RTI formats.Pre-populates the competent Public Information Officer (PIO) address, project tender codes, fiscal discrepancies, and structured statutory interrogatories.Ready for one-click citizen download, digital signing, or physical postal dispatch.8. Public Fund Trail AuditFull ledger tracing funds through fiscal checkpoints: Sanctioned Amount ➔ Released Amount ➔ Utilized Amount.Transaction-level fund flows integrated with Public Financial Management System (PFMS) data standards.Automated flags for cost overruns, idle funds, and incomplete work marked as complete.9. Civic Gamification & Community ImpactBadges: Earn recognition (First Snap, Pothole Patrol, Fund Sleuth, Ward Champion, Civic Marathon).Ranks: Tiered citizen ranks based on verified reporting accuracy and community audits (e.g., Ward Watchdog).Ward Leaderboards: Visual rankings highlighting the most active civic auditors by neighbourhood.📊 Escalation Matrix & SLAsWhen a citizen reports an issue, the accountability countdown begins immediately:Plaintext[Issue Reported]
-       │
-       ▼ (Day 0)
- Tier 1: Ward Officer ───────────► Resolved? ──► [Issue Closed]
-       │
-       ▼ (Day 3 / 72 Hours)
- Tier 2: MLA Office ─────────────► Resolved? ──► [Issue Closed]
-       │
-       ▼ (Day 5 / 120 Hours)
- Tier 3: District Collector ─────► Resolved? ──► [Issue Closed]
-       │
-       ▼ (Day 7 / 168 Hours)
- Tier 4: State Vigilance Authority
-       │
-       ▼ (Day 14 / 336 Hours)
- 📜 Automated Legal RTI Application Generated & Dispatched
-TierAuthority LevelSLA WindowEscalation ChannelAction RequiredT1Ward OfficerDay 0 – Day 3 (72h)Municipal Notification & EmailDirect site inspection & initial contractor noticeT2MLA (Member of Legislative Assembly)Day 3 – Day 5 (120h)Legislative Constituency Office AlertAdministrative inquiry & ward-level reviewT3District CollectorDay 5 – Day 7 (168h)District Grievance Cell NoticeDepartmental audit & executive compliance noticeT4State Vigilance AuthorityDay 7 – Day 14 (240h)Anti-Corruption & Vigilance IngestionIngestion into state anti-corruption audit queueRTIPublic Information Officer (PIO)Day 14 (336h)Auto-Generated Legal PetitionStatutory Section 6(1) RTI application dispatch💻 Tech StackBackendComponentTechnologyDescriptionFrameworkFastAPIAsynchronous, high-performance REST APIORM & DatabaseSQLAlchemy 2.0 (Async)Async ORM supporting SQLite (aiosqlite) and PostgreSQL (asyncpg)ValidationPydantic v2Strict data parsing and 12-factor application settingsComputer VisionOpenCV + scikit-learnORB keypoint extraction, descriptor matching, and TF-IDFNLP & VectorsSentence-Transformers + spaCy + YAKEDense vector search (all-MiniLM-L6-v2), NER, and keyword scoringDocument EngineReportLab + Jinja2Programmatic statutory RTI petition PDF generationASGI ServerUvicornProduction-grade ASGI runtimeFrontendComponentTechnologyDescriptionMeta-FrameworkTanStack Start / ViteFile-based SSR and client routing platformUI LibraryReact 19Modern concurrent component-based view layerLanguageTypeScript 5.8+End-to-end strict type safetyStylingTailwind CSS v4Utility-first responsive design tokensPrimitivesRadix UIWAI-ARIA compliant accessible component primitivesGeospatialLeaflet + React-LeafletInteractive geospatial heatmaps & ward overlaysIconsLucide ReactClean, consistent UI iconography📁 Repository StructurePlaintextaccountable/
-├── README.md                          # Platform documentation & deployment guide
-├── backend/                           # FastAPI application root
-│   ├── accountable.db                 # Local SQLite database (development)
-│   ├── requirements.txt               # Locked Python dependencies
-│   └── app/
-│       ├── __init__.py
-│       ├── config.py                  # Pydantic Settings (12-factor configuration)
-│       ├── crud.py                    # Database operations & ORM queries
-│       ├── main.py                    # Application bootstrap & route definitions
-│       ├── schemas.py                 # Pydantic request/response schemas
-│       ├── database/
-│       │   ├── __init__.py
-│       │   ├── db.py                  # Async engine, sessionmaker & table init
-│       │   └── models.py              # SQLAlchemy declarative models & relationships
-│       └── services/
-│           ├── __init__.py
-│           ├── cv_deduplication.py    # Spatial & OpenCV image deduplication
-│           ├── escalation_worker.py   # SLA time tracker & authority email sender
-│           ├── nlp_tender_match.py    # spaCy & Transformer procurement matching
-│           └── rti_pdf_gen.py         # Automated RTI petition PDF generator
+    USER --> WEB
+    WEB --> MAP
+    WEB --> REPORT
+    WEB --> DASH
+
+    WEB --> API
+    API --> SERVICES
+    SERVICES --> DB
+
+    SERVICES --> NLP
+    SERVICES --> CV
+    NLP --> SIM
+    CV --> SIM
+
+    SERVICES --> ESC
+    SERVICES --> RTI
+    SERVICES --> VERIFY
+```
+
+---
+
+# 🛠️ Technology Stack
+
+## Frontend
+
+| Technology | Role |
+|---|---|
+| React | User interface |
+| TypeScript | Type-safe development |
+| Vite / TanStack tooling | Application tooling |
+| Tailwind CSS | Styling |
+| Leaflet / React-Leaflet | Maps |
+| Radix UI | Accessible UI primitives |
+| Lucide React | Icons |
+
+## Backend
+
+| Technology | Role |
+|---|---|
+| Python | Backend language |
+| FastAPI | REST API |
+| SQLAlchemy | ORM |
+| Pydantic | Validation and settings |
+| Uvicorn | ASGI server |
+
+## AI / Data
+
+| Technology | Role |
+|---|---|
+| OpenCV | Computer vision |
+| scikit-learn | Classical ML / similarity |
+| spaCy | NLP / entity extraction |
+| YAKE | Keyword extraction |
+| Sentence Transformers | Semantic embeddings |
+| SQLite | Development database |
+| PostgreSQL | Potential production database |
+
+## Document Generation
+
+- ReportLab
+- Jinja2
+
+---
+
+# 📁 Project Structure
+
+```text
+accountable/
 │
-└── frontend/                          # TanStack Start & React frontend
-    ├── package.json                   # NPM dependencies & workspace scripts
-    ├── vite.config.ts                 # Bundler configurations & plugins
-    ├── tsconfig.json                  # TypeScript compiler settings
-    └── src/                           # Cleaned source tree root
-        ├── routeTree.gen.ts           # Generated TanStack route tree
-        ├── router.tsx                 # Router instance and history settings
-        ├── routes/
-        │   ├── __root.tsx             # Root layout shell & global providers
-        │   └── index.tsx              # Primary civic dashboard entrypoint
-        ├── styles.css                 # Tailwind directives & theme definitions
-        ├── App.jsx                    # View switcher & page shell
-        ├── components/
-        │   ├── LiveIssueMap.jsx       # Leaflet civic heatmap component
-        │   ├── SnapTagForm.jsx        # Issue reporting modal with photo upload
-        │   ├── FundTrailTable.jsx     # Financial audit ledger table
-        │   ├── GamificationCard.jsx   # Civic score, badges & impact overview
-        │   └── LeafletMap.jsx         # Client-only Leaflet boundary wrapper
-        └── services/
-            └── api.js                 # Unified API client for backend communication
-⚡ Getting StartedPrerequisitesPython 3.11+ (python3 --version)Node.js 20+ or Bun (node --version / bun --version)Git (git --version)Backend Setup (FastAPI)Enter the backend directory:Bashcd backend
-Initialize a virtual environment:Bash# macOS / Linux
-python3 -m venv venv
-source venv/bin/activate
+├── README.md
+├── LICENSE
+├── .gitignore
+│
+├── frontend/
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tsconfig.json
+│   └── src/
+│       ├── routes/
+│       ├── components/
+│       ├── services/
+│       ├── styles.css
+│       └── router.tsx
+│
+├── backend/
+│   ├── requirements.txt
+│   └── app/
+│       ├── main.py
+│       ├── config.py
+│       ├── crud.py
+│       ├── schemas.py
+│       ├── database/
+│       │   ├── db.py
+│       │   └── models.py
+│       └── services/
+│           ├── cv_deduplication.py
+│           ├── nlp_tender_match.py
+│           ├── escalation_worker.py
+│           └── rti_pdf_gen.py
+│
+├── ai/
+│   ├── nlp/
+│   ├── vision/
+│   └── similarity/
+│
+└── docs/
+```
 
-# Windows (PowerShell)
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-Install dependencies:Bashpip install -r requirements.txt
-(Optional) Download the spaCy language model:Bashpython -m spacy download en_core_web_sm
-Start the API development server:Bashuvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-API Base: http://localhost:8000Interactive Swagger UI: http://localhost:8000/docsReDoc Documentation: http://localhost:8000/redocFrontend Setup (TanStack Start / React)Enter the frontend directory:Bashcd frontend
-Install dependencies:Bashnpm install
-# or with bun
-bun install
-Launch the local development server:Bashnpm run dev
-# or with bun
-bun run dev
-Access the application:Open http://localhost:3000 in your browser.⚙️ Configuration & Environment VariablesCreate a backend/.env file. Settings are validated at runtime via Pydantic Settings (backend/app/config.py).VariableDefault ValueDescriptionDATABASE_URLsqlite+aiosqlite:///./accountable.dbAsync DB URI (postgresql+asyncpg://... in production)DB_ECHOFalseEnables verbose SQL logging in standard outputSMTP_HOST""Outgoing SMTP host for statutory escalation dispatchesSMTP_PORT587Outgoing SMTP port (587 for STARTTLS)SMTP_USE_TLSTrueEnforce TLS encryption for outbound emailsSMTP_USERNAME""SMTP authentication usernameSMTP_PASSWORD""SMTP authentication passwordSMTP_FROM_EMAILnoreply@accountable.gov.inFrom address on escalation noticesDEFAULT_WARD_OFFICER_EMAILward.officer@municipality.gov.inTier 1 notification recipientDEFAULT_MLA_EMAILmla.office@assembly.gov.inTier 2 notification recipientDEFAULT_COLLECTOR_EMAILcollector@district.gov.inTier 3 notification recipientDEFAULT_STATE_AUTHORITY_EMAILgrievance@state.gov.inTier 4 notification recipientRTI_PDF_DIR/tmp/accountable/rti_pdfsLocal filesystem directory for generated RTI PDFsDEFAULT_PIO_ADDRESSThe Public Information Officer...Default PIO designation block for legal filings📡 API ReferenceComplaints APIPOST /api/v1/complaints — Submit a new citizen complaint (triggers CV deduplication & NLP tender match background tasks).GET /api/v1/complaints — Paginated complaint listings (filterable by status and ward).GET /api/v1/complaints/{id} — Retrieve detailed complaint record by ID.POST /api/v1/complaints/{id}/deduplicate — Manually trigger the spatial + CV deduplication pipeline.Fund Flows & PFMSPOST /api/v1/fund-flows — Ingest a PFMS fund disbursement or utilization record.GET /api/v1/fund-flows — List historical fund flow records (filterable by project_id).Contractors & Corporate Network IntelligencePOST /api/v1/contractors — Register contractor entity records.GET /api/v1/contractors — List registered contractors.GET /api/v1/contractors/{id}/network — Generate shell-company relation graph based on shared directors and registered addresses.Escalations & RTI PetitionsGET /api/v1/escalations — List historical escalation logs and delivery states.POST /api/v1/complaints/{id}/escalate — Trigger next-tier escalation for a complaint.POST /api/v1/complaints/{id}/rti — Generate and download the statutory RTI petition PDF.GET /api/v1/complaints/{id}/tender-matches — List NLP-matched public procurement contracts and risk indices.Frontend Live IntegrationsGET /api/issues/heatmap — Retrieve active coordinates, category codes, and weights for Leaflet heatmap layers.GET /api/gamification/me — Retrieve current authenticated citizen score, rank, and badges (session-scoped).GET /api/gamification/{user_id} — Public civic profile lookup for a specific user ID.GET /health — Service liveness and readiness probe.🗺️ Roadmap[ ] Low-Bandwidth Channels: WhatsApp & Telegram conversational bots for offline and low-bandwidth report filing.[ ] Multilingual Voice Intake: Automated regional language transcription (Kannada, Hindi, Urdu, Tamil).[ ] Satellite & Drone Change Detection: Optical verification of road resurfacing and canal projects via Sentinel-2 imagery.[ ] Public Blockchain Notarization: Cryptographic anchoring of municipal disbursements to prevent back-dated accounting adjustments.[ ] Open Data Export: Public data endpoints structured in CKAN format for investigative journalism and transparency NGOs.🤝 ContributingContributions are welcomed from civic technologists, urban developers, lawyers, and designers!
+> The structure is **conceptual** and may change as implementation progresses.
 
-📄 License
-This project is licensed under the MIT License.
+---
+
+# 🗺️ Pilot : Bhatkal
+
+## 🇮🇳 Bhatkal, Karnataka
+
+The initial concept focuses on **Bhatkal** as a manageable pilot geography.
+
+Potential areas of focus:
+
+- 🛣️ Roads
+- 🚰 Water infrastructure
+- 🌧️ Drainage
+- 💡 Streetlights
+- 🗑️ Waste management
+- 🏢 Public buildings
+- 🏗️ Government-funded infrastructure
+- 📢 Citizen-reported civic issues
+
+A focused pilot makes it easier to test the platform's usability, data model, verification process, and community impact before considering expansion.
+
+---
+
+# 🔐 Responsible AI & Transparency
+
+A platform designed to promote accountability must itself be accountable.
+
+### Core principles
+
+- **AI outputs are indicators, not proof.**
+- Citizen reports must be distinguished from verified records.
+- Public financial information should retain its source.
+- Sensitive citizen information should be protected.
+- Automated decisions should be explainable where practical.
+- Allegations must not be presented as established facts.
+- High-impact decisions should include human review.
+- Data provenance should be maintained.
+- Legal workflows must be reviewed before real-world deployment.
+
+### Information states
+
+```text
+┌──────────┐
+│ REPORTED │
+└────┬─────┘
+     ↓
+┌──────────┐
+│ ANALYZED │
+└────┬─────┘
+     ↓
+┌──────────┐
+│ VERIFIED │
+└──────────┘
+```
+
+This separation helps prevent a citizen allegation or AI prediction from being mistaken for a confirmed fact.
+
+---
+
+# 🛣️ Roadmap
+
+## Phase 1 — Concept & Prototype
+
+- [ ] Public dashboard
+- [ ] Citizen reporting interface
+- [ ] Interactive issue map
+- [ ] Project database
+- [ ] Fund-flow visualization
+
+## Phase 2 — Intelligence Layer
+
+- [ ] Potential duplicate detection
+- [ ] NLP document analysis
+- [ ] Tender similarity matching
+- [ ] Image-assisted comparison
+- [ ] Contractor relationship visualization
+
+## Phase 3 — Accountability
+
+- [ ] Escalation workflow
+- [ ] Notification system
+- [ ] RTI draft assistance
+- [ ] Audit history
+- [ ] Verification workflow
+
+## Phase 4 — Future Possibilities
+
+- [ ] Multilingual interface
+- [ ] Kannada / Hindi / Urdu voice intake
+- [ ] WhatsApp / Telegram reporting
+- [ ] Satellite-assisted change detection
+- [ ] Drone-assisted project verification
+- [ ] Open-data exports
+- [ ] Cryptographic data notarization
+
+---
+
+# 🧪 Development Approach
+
+The project is intended to be developed incrementally:
+
+```text
+PLAN
+  ↓
+BUILD
+  ↓
+TEST
+  ↓
+INTEGRATE
+  ↓
+TEST AGAIN
+  ↓
+END-TO-END VALIDATION
+  ↓
+ITERATE
+```
+
+The development philosophy emphasizes:
+
+- Small, testable components
+- Clear data models
+- Simple user experiences
+- Responsible AI
+- Source-backed information
+- Security and privacy
+- Human verification
+
+---
+
+# 🤝 Contributing
+
+Contributions and ideas are welcome from:
+
+- Developers
+- Designers
+- Data scientists
+- Researchers
+- Civic-tech enthusiasts
+- Urban planners
+- Policy researchers
+
+### Quick start
+
+```bash
+git clone <repository-url>
+cd accountable
+```
+
+Create a feature branch:
+
+```bash
+git checkout -b feature/your-feature
+```
+
+Make your changes, test them, and open a pull request.
+
+---
+
+# 📜 License
+
+This project is intended to use the **MIT License**.
+
+See [`LICENSE`](LICENSE) for the complete license text.
+
+---
+
+# ⚠️ Disclaimer
+
+Accountable is currently a **concept / prototype project**.
+
+It is **not an official government platform** and does not represent or speak on behalf of any government department, municipality, elected representative, or public authority.
+
+The project does not claim that:
+
+- Financial records are automatically verified.
+- AI-generated indicators prove fraud, corruption, collusion, or wrongdoing.
+- Contractor relationships establish illegal activity.
+- Citizen reports are automatically factual.
+- Generated RTI documents are automatically legally valid.
+- Proposed escalation timelines are statutory deadlines.
+
+A real-world deployment would require appropriate:
+
+- Government and public-data integrations
+- Legal and regulatory review
+- Privacy and security controls
+- Data provenance and verification
+- Administrative cooperation
+- Human oversight
+- Accessibility and language support
+
+---
+
+<div align="center">
+
+## 🏛️ Accountable
+
+### **Build transparency. Follow the money. Verify reality.**
+
+*An open-source concept for a more transparent civic future.*
+
+</div>
